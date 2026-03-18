@@ -186,6 +186,27 @@ export async function POST(req: NextRequest) {
       html: buildAdminEmail(submission),
     });
 
+    // Send data to n8n webhook for Google Sheets integration
+    try {
+      const webhookUrl = "https://n8n-three.southafricanorth.azurecontainer.io/webhook/coaching-assessment";
+      const webhookResponse = await fetch(webhookUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(submission),
+      });
+      
+      if (!webhookResponse.ok) {
+        console.warn(`Webhook failed: ${webhookResponse.status} ${webhookResponse.statusText}`);
+      } else {
+        console.log("Data successfully sent to Google Sheets via n8n webhook");
+      }
+    } catch (webhookError) {
+      console.error("Webhook error:", webhookError);
+      // Don't fail the entire request if webhook fails
+    }
+
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Mailgun error:", error);
