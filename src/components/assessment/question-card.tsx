@@ -14,10 +14,10 @@ interface QuestionCardProps {
 }
 
 const OPTION_COLORS = {
-  A: "hover:border-rose-400 hover:bg-rose-50 data-[selected=true]:border-rose-400 data-[selected=true]:bg-rose-50",
-  B: "hover:border-teal-400 hover:bg-teal-50 data-[selected=true]:border-teal-400 data-[selected=true]:bg-teal-50",
-  C: "hover:border-blue-400 hover:bg-blue-50 data-[selected=true]:border-blue-400 data-[selected=true]:bg-blue-50",
-  D: "hover:border-violet-400 hover:bg-violet-50 data-[selected=true]:border-violet-400 data-[selected=true]:bg-violet-50",
+  A: "hover:border-rose-400 hover:bg-rose-50 hover:text-rose-900 dark:hover:bg-rose-950/30 dark:hover:text-rose-100 data-[selected=true]:border-rose-400 data-[selected=true]:bg-rose-50 data-[selected=true]:text-rose-900 dark:data-[selected=true]:bg-rose-950/30 dark:data-[selected=true]:text-rose-100",
+  B: "hover:border-teal-400 hover:bg-teal-50 hover:text-teal-900 dark:hover:bg-teal-950/30 dark:hover:text-teal-100 data-[selected=true]:border-teal-400 data-[selected=true]:bg-teal-50 data-[selected=true]:text-teal-900 dark:data-[selected=true]:bg-teal-950/30 dark:data-[selected=true]:text-teal-100",
+  C: "hover:border-blue-400 hover:bg-blue-50 hover:text-blue-900 dark:hover:bg-blue-950/30 dark:hover:text-blue-100 data-[selected=true]:border-blue-400 data-[selected=true]:bg-blue-50 data-[selected=true]:text-blue-900 dark:data-[selected=true]:bg-blue-950/30 dark:data-[selected=true]:text-blue-100",
+  D: "hover:border-violet-400 hover:bg-violet-50 hover:text-violet-900 dark:hover:bg-violet-950/30 dark:hover:text-violet-100 data-[selected=true]:border-violet-400 data-[selected=true]:bg-violet-50 data-[selected=true]:text-violet-900 dark:data-[selected=true]:bg-violet-950/30 dark:data-[selected=true]:text-violet-100",
 };
 
 const OPTION_DOT_COLORS = {
@@ -67,6 +67,7 @@ export function QuestionCard({
               className={cn(
                 "w-full text-left flex items-start gap-3 p-4 rounded-xl border-2 border-slate-200 dark:border-slate-700",
                 "bg-white dark:bg-slate-800/60 transition-all duration-200 cursor-pointer",
+                "text-slate-700 dark:text-slate-200",
                 OPTION_COLORS[option.id]
               )}
             >
@@ -84,7 +85,7 @@ export function QuestionCard({
                   <span className="text-xs font-bold">{option.id}</span>
                 )}
               </div>
-              <span className="text-sm md:text-base text-slate-700 dark:text-slate-200 leading-relaxed">
+              <span className="text-sm md:text-base leading-relaxed">
                 {option.text}
               </span>
             </motion.button>

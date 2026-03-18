@@ -16,6 +16,7 @@ interface AssessmentShellProps {
   name: string;
   email: string;
   organizationName: string;
+  staffMemberName?: string;
 }
 
 export function AssessmentShell({
@@ -23,6 +24,7 @@ export function AssessmentShell({
   name,
   email,
   organizationName,
+  staffMemberName,
 }: AssessmentShellProps) {
   const [currentModuleIndex, setCurrentModuleIndex] = useState(0);
   const [answers, setAnswers] = useState<Answer[]>([]);
@@ -108,6 +110,7 @@ export function AssessmentShell({
           participantEmail: email,
           organizationName,
           role,
+          staffMemberName,
           answers,
           scores: finalScores,
           submittedAt: new Date().toISOString(),

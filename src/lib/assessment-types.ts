@@ -45,6 +45,7 @@ export interface AssessmentSubmission {
   participantEmail: string;
   organizationName: string;
   role: UserRole;
+  staffMemberName?: string;
   answers: Answer[];
   scores: ScoreBreakdown;
   submittedAt: string;

@@ -10,16 +10,18 @@ export default function AssessmentPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [org, setOrg] = useState("");
+  const [staffMemberName, setStaffMemberName] = useState("");
   const [started, setStarted] = useState(false);
 
   if (!started) {
     return (
       <RoleSelection
-        onConfirm={(selectedRole, fullName, emailAddress, orgName) => {
+        onConfirm={(selectedRole, fullName, emailAddress, orgName, staffName) => {
           setRole(selectedRole);
           setName(fullName);
           setEmail(emailAddress);
           setOrg(orgName);
+          setStaffMemberName(staffName || "");
           setStarted(true);
         }}
       />
@@ -32,6 +34,7 @@ export default function AssessmentPage() {
       name={name}
       email={email}
       organizationName={org}
+      staffMemberName={staffMemberName}
     />
   );
 }

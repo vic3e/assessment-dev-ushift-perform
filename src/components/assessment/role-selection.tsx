@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 interface RoleSelectionProps {
-  onConfirm: (role: UserRole, name: string, email: string, org: string) => void;
+  onConfirm: (role: UserRole, name: string, email: string, org: string, staffMemberName?: string) => void;
 }
 
 export function RoleSelection({ onConfirm }: RoleSelectionProps) {
@@ -19,6 +19,7 @@ export function RoleSelection({ onConfirm }: RoleSelectionProps) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [org, setOrg] = useState("");
+  const [staffMemberName, setStaffMemberName] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const roles = [
@@ -52,6 +53,9 @@ export function RoleSelection({ onConfirm }: RoleSelectionProps) {
     if (!email.trim()) errs.email = "Email is required";
     else if (!/\S+@\S+\.\S+/.test(email)) errs.email = "Invalid email";
     if (!selectedRole) errs.role = "Please select a role";
+    if (selectedRole === "manager" && !staffMemberName.trim()) {
+      errs.staffMemberName = "Staff member name is required for behavioral assessment";
+    }
     return errs;
   }
 
@@ -61,7 +65,7 @@ export function RoleSelection({ onConfirm }: RoleSelectionProps) {
       setErrors(errs);
       return;
     }
-    onConfirm(selectedRole, name.trim(), email.trim(), org.trim());
+    onConfirm(selectedRole, name.trim(), email.trim(), org.trim(), staffMemberName.trim() || undefined);
   }
 
   return (
@@ -131,6 +135,21 @@ export function RoleSelection({ onConfirm }: RoleSelectionProps) {
                 onChange={(e) => setOrg(e.target.value)}
               />
             </div>
+            {selectedRole === "manager" && (
+              <div>
+                <Label htmlFor="staffMemberName">Staff Member Being Assessed *</Label>
+                <Input
+                  id="staffMemberName"
+                  placeholder="Enter the name of the staff member you are assessing"
+                  value={staffMemberName}
+                  onChange={(e) => setStaffMemberName(e.target.value)}
+                  className={errors.staffMemberName ? "border-red-400" : ""}
+                />
+                {errors.staffMemberName && (
+                  <p className="text-xs text-red-500 mt-1">{errors.staffMemberName}</p>
+                )}
+              </div>
+            )}
           </CardContent>
         </Card>
 

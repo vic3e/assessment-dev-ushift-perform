@@ -10,7 +10,7 @@ const mg = mailgun.client({
 });
 
 function buildParticipantEmail(submission: AssessmentSubmission): string {
-  const { participantName, role, scores, organizationName, submittedAt } =
+  const { participantName, role, scores, organizationName, submittedAt, staffMemberName } =
     submission;
 
   const passBadge = scores.passed
@@ -59,9 +59,7 @@ function buildParticipantEmail(submission: AssessmentSubmission): string {
     <div style="padding:32px;">
       <p style="color:#374151;font-size:15px;margin:0 0 24px;">
         Dear <strong>${participantName}</strong>,<br><br>
-        Thank you for completing the Coaching Assessment${
-          organizationName ? ` for <strong>${organizationName}</strong>` : ""
-        }. 
+        Thank you for completing the Coaching Assessment${organizationName ? ` for <strong>${organizationName}</strong>` : ""}${role === "manager" && staffMemberName ? ` for staff member <strong>${staffMemberName}</strong>` : ""}. 
         Here is a summary of your results.
       </p>
 
@@ -153,6 +151,7 @@ function buildAdminEmail(submission: AssessmentSubmission): string {
     scores,
     submittedAt,
     answers,
+    staffMemberName,
   } = submission;
 
   const answerRows = answers
@@ -184,6 +183,7 @@ function buildAdminEmail(submission: AssessmentSubmission): string {
         <tr><td style="padding:8px 0;font-size:13px;color:#64748b;">Email</td><td style="padding:8px 0;font-size:13px;color:#1e293b;">${participantEmail}</td></tr>
         <tr><td style="padding:8px 0;font-size:13px;color:#64748b;">Organisation</td><td style="padding:8px 0;font-size:13px;color:#1e293b;">${organizationName || "--"}</td></tr>
         <tr><td style="padding:8px 0;font-size:13px;color:#64748b;">Role</td><td style="padding:8px 0;font-size:13px;color:#1e293b;text-transform:capitalize;">${role}</td></tr>
+        ${role === "manager" && staffMemberName ? `<tr><td style="padding:8px 0;font-size:13px;color:#64748b;">Staff Member</td><td style="padding:8px 0;font-size:13px;color:#1e293b;">${staffMemberName}</td></tr>` : ""}
         <tr><td style="padding:8px 0;font-size:13px;color:#64748b;">Result</td>
           <td style="padding:8px 0;">
             <span style="background:${scores.passed ? "#10b981" : "#ef4444"};color:white;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:bold;">
