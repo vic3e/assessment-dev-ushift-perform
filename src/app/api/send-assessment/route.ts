@@ -10,32 +10,8 @@ const mg = mailgun.client({
 });
 
 function buildParticipantEmail(submission: AssessmentSubmission): string {
-  const { participantName, role, scores, organizationName, submittedAt, staffMemberName } =
+  const { participantName, role, organizationName, submittedAt, staffMemberName } =
     submission;
-
-  const passBadge = scores.passed
-    ? '<span style="background:#10b981;color:white;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:bold;">PASSED</span>'
-    : '<span style="background:#ef4444;color:white;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:bold;">EXTENDED COACHING REQUIRED</span>';
-
-  const moduleRows =
-    role === "staff" && scores.moduleBreakdown.length > 0
-      ? scores.moduleBreakdown
-          .map(
-            (mod) => `
-        <tr>
-          <td style="padding:8px 12px;border-bottom:1px solid #f1f5f9;font-size:13px;color:#475569;">${mod.title}</td>
-          <td style="padding:8px 12px;border-bottom:1px solid #f1f5f9;font-size:13px;text-align:center;">${mod.correct}/${mod.total}</td>
-          <td style="padding:8px 12px;border-bottom:1px solid #f1f5f9;font-size:13px;text-align:center;font-weight:bold;color:${
-            mod.percentage >= 90
-              ? "#10b981"
-              : mod.percentage >= 70
-              ? "#f59e0b"
-              : "#ef4444"
-          };">${mod.percentage}%</td>
-        </tr>`
-          )
-          .join("")
-      : "";
 
   return `
 <!DOCTYPE html>
@@ -45,7 +21,7 @@ function buildParticipantEmail(submission: AssessmentSubmission): string {
   <div style="max-width:600px;margin:40px auto;background:white;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08);">
 
     <div style="background:linear-gradient(135deg,#1e40af,#0369a1);padding:40px 32px;text-align:center;">
-      <h1 style="color:white;margin:0;font-size:24px;font-weight:700;">Coaching Assessment Results</h1>
+      <h1 style="color:white;margin:0;font-size:24px;font-weight:700;">Thank You for Completing the Assessment</h1>
       <p style="color:rgba(255,255,255,0.8);margin:8px 0 0;font-size:14px;">
         ${new Date(submittedAt).toLocaleDateString("en-GB", {
           weekday: "long",
@@ -60,80 +36,27 @@ function buildParticipantEmail(submission: AssessmentSubmission): string {
       <p style="color:#374151;font-size:15px;margin:0 0 24px;">
         Dear <strong>${participantName}</strong>,<br><br>
         Thank you for completing the Coaching Assessment${organizationName ? ` for <strong>${organizationName}</strong>` : ""}${role === "manager" && staffMemberName ? ` for staff member <strong>${staffMemberName}</strong>` : ""}. 
-        Here is a summary of your results.
+        Your responses have been successfully submitted.
       </p>
 
-      <div style="text-align:center;margin-bottom:28px;">
-        ${passBadge}
+      <div style="background:#ecfdf5;border:1px solid #6ee7b7;border-radius:10px;padding:16px;margin-bottom:24px;">
+        <p style="margin:0;font-size:14px;color:#065f46;text-align:center;">
+          <strong>Assessment Complete!</strong><br>
+          Your results will be reviewed and shared with you shortly.
+        </p>
       </div>
 
       <div style="background:#f8fafc;border-radius:12px;padding:20px;margin-bottom:24px;">
-        <h2 style="margin:0 0 16px;font-size:16px;color:#1e293b;">Score Summary</h2>
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-          <span style="color:#64748b;font-size:14px;">Final Weighted Score</span>
-          <span style="font-size:28px;font-weight:900;color:${
-            scores.passed ? "#10b981" : "#ef4444"
-          }">${scores.weightedTotal}%</span>
-        </div>
-        <hr style="border:none;border-top:1px solid #e2e8f0;margin:12px 0;">
-        ${
-          role === "staff"
-            ? `
-        <div style="display:flex;justify-content:space-between;font-size:13px;color:#64748b;margin-bottom:6px;">
-          <span>Knowledge Assessment (40%)</span><span style="font-weight:600;color:#1e293b;">${scores.knowledgeScore}%</span>
-        </div>
-        <div style="display:flex;justify-content:space-between;font-size:13px;color:#64748b;">
-          <span>Attendance Evaluation (10%)</span><span style="font-weight:600;color:#1e293b;">${scores.attendanceScore}%</span>
-        </div>`
-            : `
-        <div style="display:flex;justify-content:space-between;font-size:13px;color:#64748b;margin-bottom:6px;">
-          <span>Behavioural Assessment (50%)</span><span style="font-weight:600;color:#1e293b;">${scores.behavioralScore}%</span>
-        </div>
-        <div style="display:flex;justify-content:space-between;font-size:13px;color:#64748b;">
-          <span>Attendance Evaluation (10%)</span><span style="font-weight:600;color:#1e293b;">${scores.attendanceScore}%</span>
-        </div>`
-        }
+        <h2 style="margin:0 0 16px;font-size:16px;color:#1e293b;text-align:center;">What Happens Next?</h2>
+        <ul style="margin:0;padding-left:20px;color:#475569;font-size:14px;line-height:1.6;">
+          <li>Your assessment responses are being reviewed</li>
+          <li>Results and feedback will be shared with you soon</li>
+          <li>Any follow-up actions will be communicated directly</li>
+        </ul>
       </div>
 
-      ${
-        moduleRows
-          ? `
-      <div style="margin-bottom:24px;">
-        <h2 style="margin:0 0 12px;font-size:15px;color:#1e293b;">Module Breakdown</h2>
-        <table style="width:100%;border-collapse:collapse;border-radius:8px;overflow:hidden;border:1px solid #e2e8f0;">
-          <thead>
-            <tr style="background:#f1f5f9;">
-              <th style="padding:10px 12px;text-align:left;font-size:12px;color:#64748b;font-weight:600;">MODULE</th>
-              <th style="padding:10px 12px;text-align:center;font-size:12px;color:#64748b;font-weight:600;">SCORE</th>
-              <th style="padding:10px 12px;text-align:center;font-size:12px;color:#64748b;font-weight:600;">%</th>
-            </tr>
-          </thead>
-          <tbody>${moduleRows}</tbody>
-        </table>
-      </div>`
-          : ""
-      }
-
-      ${
-        !scores.passed
-          ? `
-      <div style="background:#fef3c7;border:1px solid #fcd34d;border-radius:10px;padding:16px;margin-bottom:24px;">
-        <p style="margin:0;font-size:14px;color:#92400e;">
-          <strong>Next Steps:</strong> Your score is below the 90% pass mark. 
-          You will be contacted to schedule an extended coaching session.
-        </p>
-      </div>`
-          : `
-      <div style="background:#ecfdf5;border:1px solid #6ee7b7;border-radius:10px;padding:16px;margin-bottom:24px;">
-        <p style="margin:0;font-size:14px;color:#065f46;">
-          <strong>Well done!</strong> You have successfully passed the Coaching Assessment. 
-          Your achievement has been recorded.
-        </p>
-      </div>`
-      }
-
       <p style="color:#94a3b8;font-size:12px;text-align:center;margin:0;">
-        This is an automated message from the Coaching Assessment Platform.<br>
+        This is an automated confirmation from the Coaching Assessment Platform.<br>
         Please do not reply to this email.
       </p>
     </div>
@@ -250,7 +173,7 @@ export async function POST(req: NextRequest) {
     await mg.messages.create(domain, {
       from: `${appName} <${fromEmail}>`,
       to: [submission.participantEmail],
-      subject: `Your Coaching Assessment Results -- ${resultLabel}`,
+      subject: `Thank you for completing the Coaching Assessment`,
       html: buildParticipantEmail(submission),
     });
 

@@ -1,0 +1,3 @@
+Timestamp,Name,Email,Organization,Role,Staff Member,Final Score,Pass/Fail,Knowledge Score,Behavioral Score,Attendance Score,Module 1 Score,Module 2 Score,Module 3 Score,Module 4 Score,Module 5 Score,Module 6 Score,Module 7 Score,Overall Rating,Total Questions,Correct Answers,Raw Answers JSON
+2026-03-18T10:30:00.000Z,John Smith,john.smith@example.com,Acme Corp,staff,,85,FAIL,85,0,100,83,90,80,88,85,82,87,Proficient,40,34,"{""answers"":[{""questionId"":1,""selected"":""B""},{""questionId"":2,""selected"":""A""}]}"
+2026-03-18T11:15:00.000Z,Jane Manager,jane.manager@example.com,Acme Corp,manager,Bob Johnson,92,PASS,0,92,100,,,,,,,,,Advanced,11,10,"{""answers"":[{""questionId"":101,""selected"":""D""},{""questionId"":102,""selected"":""C""}]}"

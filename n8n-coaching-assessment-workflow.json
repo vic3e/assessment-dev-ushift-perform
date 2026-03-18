@@ -1,0 +1,276 @@
+{
+  "meta": {
+    "instanceId": "coaching-assessment-workflow"
+  },
+  "nodes": [
+    {
+      "parameters": {
+        "path": "coaching-assessment",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "Assessment Results Webhook", 
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        240,
+        300
+      ],
+      "webhookId": "coaching-assessment-results"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "assign-1",
+              "name": "timestamp",
+              "value": "={{ new Date().toISOString() }}",
+              "type": "string"
+            },
+            {
+              "id": "assign-2", 
+              "name": "name",
+              "value": "={{ $json.participantName }}",
+              "type": "string"
+            },
+            {
+              "id": "assign-3",
+              "name": "email",
+              "value": "={{ $json.participantEmail }}",
+              "type": "string"
+            },
+            {
+              "id": "assign-4",
+              "name": "organization",
+              "value": "={{ $json.organizationName || 'N/A' }}",
+              "type": "string"
+            },
+            {
+              "id": "assign-5",
+              "name": "role",
+              "value": "={{ $json.role }}",
+              "type": "string"
+            },
+            {
+              "id": "assign-6",
+              "name": "staff_member", 
+              "value": "={{ $json.staffMemberName || 'N/A' }}",
+              "type": "string"
+            },
+            {
+              "id": "assign-7",
+              "name": "final_score",
+              "value": "={{ $json.scores.weightedTotal }}",
+              "type": "number"
+            },
+            {
+              "id": "assign-8",
+              "name": "pass_fail",
+              "value": "={{ $json.scores.passed ? 'PASS' : 'FAIL' }}",
+              "type": "string"
+            },
+            {
+              "id": "assign-9",
+              "name": "knowledge_score",
+              "value": "={{ $json.scores.knowledgeScore }}",
+              "type": "number"
+            },
+            {
+              "id": "assign-10",
+              "name": "behavioral_score",
+              "value": "={{ $json.scores.behavioralScore }}",
+              "type": "number"
+            },
+            {
+              "id": "assign-11", 
+              "name": "attendance_score",
+              "value": "={{ $json.scores.attendanceScore }}",
+              "type": "number"
+            },
+            {
+              "id": "assign-12",
+              "name": "module_1_score",
+              "value": "={{ $json.scores.moduleBreakdown[0]?.percentage || 'N/A' }}",
+              "type": "string"
+            },
+            {
+              "id": "assign-13",
+              "name": "module_2_score", 
+              "value": "={{ $json.scores.moduleBreakdown[1]?.percentage || 'N/A' }}",
+              "type": "string"
+            },
+            {
+              "id": "assign-14",
+              "name": "module_3_score",
+              "value": "={{ $json.scores.moduleBreakdown[2]?.percentage || 'N/A' }}",
+              "type": "string"
+            },
+            {
+              "id": "assign-15",
+              "name": "module_4_score",
+              "value": "={{ $json.scores.moduleBreakdown[3]?.percentage || 'N/A' }}",
+              "type": "string"
+            },
+            {
+              "id": "assign-16",
+              "name": "module_5_score",
+              "value": "={{ $json.scores.moduleBreakdown[4]?.percentage || 'N/A' }}",
+              "type": "string"
+            },
+            {
+              "id": "assign-17",
+              "name": "module_6_score",
+              "value": "={{ $json.scores.moduleBreakdown[5]?.percentage || 'N/A' }}",
+              "type": "string"
+            },
+            {
+              "id": "assign-18",
+              "name": "module_7_score",
+              "value": "={{ $json.scores.moduleBreakdown[6]?.percentage || 'N/A' }}",
+              "type": "string"
+            },
+            {
+              "id": "assign-19",
+              "name": "overall_rating",
+              "value": "={{ $json.scores.weightedTotal >= 90 ? 'Advanced' : $json.scores.weightedTotal >= 75 ? 'Proficient' : $json.scores.weightedTotal >= 60 ? 'Developing' : 'Emerging' }}",
+              "type": "string"
+            },
+            {
+              "id": "assign-20",
+              "name": "total_questions", 
+              "value": "={{ $json.answers.length }}",
+              "type": "number"
+            },
+            {
+              "id": "assign-21",
+              "name": "correct_answers",
+              "value": "={{ $json.role === 'staff' ? Math.round($json.scores.knowledgeScore * $json.answers.length / 100) : Math.round($json.scores.behavioralScore * $json.answers.length / 100) }}",
+              "type": "number"
+            },
+            {
+              "id": "assign-22",
+              "name": "raw_answers_json",
+              "value": "={{ JSON.stringify($json.answers) }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "data-transform",
+      "name": "Transform Data",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        460,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1gUOPz0QCsq7edpFPbHwReoNBrtHf7CEDPyFZM99udRI",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Sheet1",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "timestamp": "={{ $json.timestamp }}",
+            "name": "={{ $json.name }}",
+            "email": "={{ $json.email }}",
+            "organization": "={{ $json.organization }}",
+            "role": "={{ $json.role }}",
+            "staff_member": "={{ $json.staff_member }}",
+            "final_score": "={{ $json.final_score }}",
+            "pass_fail": "={{ $json.pass_fail }}",
+            "knowledge_score": "={{ $json.knowledge_score }}",
+            "behavioral_score": "={{ $json.behavioral_score }}",
+            "attendance_score": "={{ $json.attendance_score }}",
+            "module_1_score": "={{ $json.module_1_score }}",
+            "module_2_score": "={{ $json.module_2_score }}", 
+            "module_3_score": "={{ $json.module_3_score }}",
+            "module_4_score": "={{ $json.module_4_score }}",
+            "module_5_score": "={{ $json.module_5_score }}",
+            "module_6_score": "={{ $json.module_6_score }}",
+            "module_7_score": "={{ $json.module_7_score }}",
+            "overall_rating": "={{ $json.overall_rating }}",
+            "total_questions": "={{ $json.total_questions }}",
+            "correct_answers": "={{ $json.correct_answers }}",
+            "raw_answers_json": "={{ $json.raw_answers_json }}"
+          },
+          "matchingColumns": [
+            "timestamp",
+            "name", 
+            "email",
+            "organization",
+            "role",
+            "staff_member",
+            "final_score",
+            "pass_fail",
+            "knowledge_score",
+            "behavioral_score", 
+            "attendance_score",
+            "module_1_score",
+            "module_2_score",
+            "module_3_score",
+            "module_4_score",
+            "module_5_score",
+            "module_6_score",
+            "module_7_score",
+            "overall_rating",
+            "total_questions",
+            "correct_answers", 
+            "raw_answers_json"
+          ]
+        }
+      },
+      "id": "google-sheets",
+      "name": "Add to Google Sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.4,
+      "position": [
+        680,
+        300
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YOUR_GOOGLE_SHEETS_CREDENTIAL_ID",
+          "name": "Google Sheets Account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Assessment Results Webhook": {
+      "main": [
+        [
+          {
+            "node": "Transform Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Transform Data": {
+      "main": [
+        [
+          {
+            "node": "Add to Google Sheet", 
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {}
+}
