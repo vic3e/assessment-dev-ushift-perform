@@ -135,21 +135,6 @@ export function RoleSelection({ onConfirm }: RoleSelectionProps) {
                 onChange={(e) => setOrg(e.target.value)}
               />
             </div>
-            {selectedRole === "manager" && (
-              <div>
-                <Label htmlFor="staffMemberName">Staff Member Being Assessed *</Label>
-                <Input
-                  id="staffMemberName"
-                  placeholder="Enter the name of the staff member you are assessing"
-                  value={staffMemberName}
-                  onChange={(e) => setStaffMemberName(e.target.value)}
-                  className={errors.staffMemberName ? "border-red-400" : ""}
-                />
-                {errors.staffMemberName && (
-                  <p className="text-xs text-red-500 mt-1">{errors.staffMemberName}</p>
-                )}
-              </div>
-            )}
           </CardContent>
         </Card>
 
@@ -199,6 +184,24 @@ export function RoleSelection({ onConfirm }: RoleSelectionProps) {
             );
           })}
         </div>
+
+        {selectedRole === "manager" && (
+          <Card className="mb-6 shadow-sm border-0 bg-white/80 backdrop-blur">
+            <CardContent className="p-6">
+              <Label htmlFor="staffMemberName">Staff Member Being Assessed *</Label>
+              <Input
+                id="staffMemberName"
+                placeholder="Enter the name of the staff member you are assessing"
+                value={staffMemberName}
+                onChange={(e) => setStaffMemberName(e.target.value)}
+                className={errors.staffMemberName ? "border-red-400" : ""}
+              />
+              {errors.staffMemberName && (
+                <p className="text-xs text-red-500 mt-1">{errors.staffMemberName}</p>
+              )}
+            </CardContent>
+          </Card>
+        )}
 
         <Card className="mb-8 border-0 bg-amber-50 shadow-none">
           <CardContent className="p-4 flex gap-3">
