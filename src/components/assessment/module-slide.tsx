@@ -45,6 +45,12 @@ export function ModuleSlide({
   const isLastQuestion = currentQ === questions.length - 1;
 
   function handleNext() {
+    // Check if current question is answered before proceeding
+    if (!currentAnswer) {
+      setShowWarning(true);
+      return;
+    }
+
     if (currentQ < questions.length - 1) {
       setDirection(1);
       setCurrentQ((q) => q + 1);
@@ -162,10 +168,16 @@ export function ModuleSlide({
           >
             <AlertCircle className="w-4 h-4 shrink-0" />
             <span>
-              Please answer all {questions.length} questions before proceeding.{" "}
-              <span className="font-medium">
-                {questions.length - answeredInModule} remaining.
-              </span>
+              {!currentAnswer ? (
+                "Please answer this question before proceeding."
+              ) : (
+                <>
+                  Please answer all {questions.length} questions before proceeding.{" "}
+                  <span className="font-medium">
+                    {questions.length - answeredInModule} remaining.
+                  </span>
+                </>
+              )}
             </span>
           </motion.div>
         )}
@@ -186,7 +198,12 @@ export function ModuleSlide({
           {currentQ + 1} / {questions.length}
         </span>
 
-        <Button onClick={handleNext} className="gap-2" variant="default">
+        <Button 
+          onClick={handleNext} 
+          className="gap-2" 
+          variant="default" 
+          disabled={!currentAnswer || (isLastQuestion && !allAnswered)}
+        >
           {isLastQuestion ? (
             isLast ? (
               <>Review & Submit</>
