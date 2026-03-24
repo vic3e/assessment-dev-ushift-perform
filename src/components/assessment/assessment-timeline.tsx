@@ -39,7 +39,7 @@ export function AssessmentTimeline({
         <div className="flex items-center justify-between mb-4">
           <div>
             <h1 className="font-bold text-slate-900 text-sm md:text-base">
-              Coaching Assessment
+              Coaching Completion Assessment
             </h1>
             <p className="text-xs text-slate-500">
               {role === "staff"

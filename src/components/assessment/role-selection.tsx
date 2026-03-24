@@ -86,11 +86,10 @@ export function RoleSelection({ onConfirm }: RoleSelectionProps) {
             <UserCheck className="w-8 h-8 text-primary-foreground" />
           </motion.div>
           <h1 className="text-3xl font-bold text-slate-900">
-            Coaching Assessment
+            Coaching Completion Assessment
           </h1>
           <p className="text-slate-500 mt-2 text-sm">
-            Pass mark is <span className="font-semibold text-primary">90%</span>.
-            Scores below will result in an extended coaching session.
+            Pass mark is <span className="font-semibold text-primary">90%</span> based on attendance, knowledge/behavioral assessment, and overall performance.
           </p>
         </div>
 
@@ -208,8 +207,7 @@ export function RoleSelection({ onConfirm }: RoleSelectionProps) {
             <div className="text-amber-500 text-lg mt-0.5">i</div>
             <div className="text-sm text-amber-800 space-y-1">
               <p>
-                <strong>Pass mark: 90%</strong> -- Any score below will result in
-                an extended coaching session.
+                <strong>Pass mark: 90%</strong> based on a combination of attendance, knowledge assessment, and behavioral assessment.
               </p>
               <p>You will receive a copy of your results by email upon submission.</p>
             </div>

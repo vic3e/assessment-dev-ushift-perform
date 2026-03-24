@@ -35,7 +35,7 @@ function buildParticipantEmail(submission: AssessmentSubmission): string {
     <div style="padding:32px;">
       <p style="color:#374151;font-size:15px;margin:0 0 24px;">
         Dear <strong>${participantName}</strong>,<br><br>
-        Thank you for completing the Coaching Assessment${organizationName ? ` for <strong>${organizationName}</strong>` : ""}${role === "manager" && staffMemberName ? ` for staff member <strong>${staffMemberName}</strong>` : ""}. 
+        Thank you for completing the Coaching Completion Assessment${organizationName ? ` for <strong>${organizationName}</strong>` : ""}${role === "manager" && staffMemberName ? ` for staff member <strong>${staffMemberName}</strong>` : ""}. 
         Your responses have been successfully submitted.
       </p>
 
@@ -56,7 +56,7 @@ function buildParticipantEmail(submission: AssessmentSubmission): string {
       </div>
 
       <p style="color:#94a3b8;font-size:12px;text-align:center;margin:0;">
-        This is an automated confirmation from the Coaching Assessment Platform.<br>
+        This is an automated confirmation from the Coaching Completion Assessment Platform.<br>
         Please do not reply to this email.
       </p>
     </div>
@@ -159,7 +159,7 @@ export async function POST(req: NextRequest) {
     const domain = process.env.MAILGUN_DOMAIN;
     const fromEmail = process.env.FROM_EMAIL;
     const adminEmail = process.env.ADMIN_EMAIL;
-    const appName = process.env.NEXT_PUBLIC_APP_NAME ?? "Coaching Assessment";
+    const appName = process.env.NEXT_PUBLIC_APP_NAME ?? "Coaching Completion Assessment";
 
     if (!domain || !fromEmail || !adminEmail) {
       console.error("Missing required env vars: MAILGUN_DOMAIN, FROM_EMAIL, ADMIN_EMAIL");
@@ -173,7 +173,7 @@ export async function POST(req: NextRequest) {
     await mg.messages.create(domain, {
       from: `${appName} <${fromEmail}>`,
       to: [submission.participantEmail],
-      subject: `Thank you for completing the Coaching Assessment`,
+      subject: `Thank you for completing the Coaching Completion Assessment`,
       html: buildParticipantEmail(submission),
     });
 

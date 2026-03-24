@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Coaching Assessment",
-  description: "Coaching assessment for staff and managers",
+  title: "Coaching Completion Assessment",
+  description: "Coaching completion assessment for staff and managers",
 };
 
 export default function RootLayout({
