@@ -5,6 +5,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { QuestionCard } from "./question-card";
+import { useTranslation } from "@/lib/i18n/use-translation";
+import { interpolate } from "@/lib/i18n/translations";
 import type { Question, Answer } from "@/lib/assessment-types";
 
 interface ModuleSlideProps {
@@ -35,6 +37,7 @@ export function ModuleSlide({
   const [currentQ, setCurrentQ] = useState(0);
   const [showWarning, setShowWarning] = useState(false);
   const [direction, setDirection] = useState<1 | -1>(1);
+  const t = useTranslation();
 
   const question = questions[currentQ];
   const answeredInModule = questions.filter((q) =>
@@ -82,11 +85,17 @@ export function ModuleSlide({
       <div className="mb-6">
         <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 mb-1">
           <span>
-            Module {moduleNumber} of {totalModules}
+            {interpolate(t.moduleSlide.moduleOf, { 
+              current: moduleNumber.toString(), 
+              total: totalModules.toString() 
+            })}
           </span>
           <span>·</span>
           <span className="text-primary font-medium">
-            {answeredInModule}/{questions.length} answered
+            {interpolate(t.moduleSlide.answered, { 
+              answered: answeredInModule.toString(), 
+              total: questions.length.toString() 
+            })}
           </span>
         </div>
         <h2 className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white">
@@ -169,14 +178,12 @@ export function ModuleSlide({
             <AlertCircle className="w-4 h-4 shrink-0" />
             <span>
               {!currentAnswer ? (
-                "Please answer this question before proceeding."
+                t.moduleSlide.pleaseAnswerCurrent
               ) : (
-                <>
-                  Please answer all {questions.length} questions before proceeding.{" "}
-                  <span className="font-medium">
-                    {questions.length - answeredInModule} remaining.
-                  </span>
-                </>
+                <>{interpolate(t.moduleSlide.pleaseAnswerAll, { 
+                  total: questions.length.toString(),
+                  remaining: (questions.length - answeredInModule).toString()
+                })}</>
               )}
             </span>
           </motion.div>
@@ -191,11 +198,14 @@ export function ModuleSlide({
           className="gap-2"
         >
           <ChevronLeft className="w-4 h-4" />
-          Back
+          {t.moduleSlide.back}
         </Button>
 
         <span className="text-xs text-slate-400">
-          {currentQ + 1} / {questions.length}
+          {interpolate(t.moduleSlide.questionProgress, {
+            current: (currentQ + 1).toString(),
+            total: questions.length.toString()
+          })}
         </span>
 
         <Button 
@@ -206,16 +216,16 @@ export function ModuleSlide({
         >
           {isLastQuestion ? (
             isLast ? (
-              <>Review & Submit</>
+              <>{t.moduleSlide.reviewSubmit}</>
             ) : (
               <>
-                Next Module
+                {t.moduleSlide.nextModule}
                 <ChevronRight className="w-4 h-4" />
               </>
             )
           ) : (
             <>
-              Next
+              {t.moduleSlide.next}
               <ChevronRight className="w-4 h-4" />
             </>
           )}

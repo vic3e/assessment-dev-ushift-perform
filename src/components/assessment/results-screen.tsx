@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { useTranslation } from "@/lib/i18n/use-translation";
+import { interpolate } from "@/lib/i18n/translations";
 import type { ScoreBreakdown, UserRole } from "@/lib/assessment-types";
 import { getOverallRating } from "@/lib/scoring";
 import { cn } from "@/lib/utils";
@@ -54,6 +56,8 @@ export function ResultsScreen({
   isSending,
   emailSent,
 }: ResultsScreenProps) {
+  const t = useTranslation();
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 flex items-center justify-center p-4">
       <motion.div
@@ -79,36 +83,36 @@ export function ResultsScreen({
             </div>
           </motion.div>
           <h1 className="text-2xl font-bold mb-1">
-            Assessment Complete!
+            {t.results.complete}
           </h1>
           <p className="text-sm text-slate-600 dark:text-slate-300">
-            Thank you, {name}. Your responses have been successfully submitted.
+            {interpolate(t.results.thankYou, { name })}
           </p>
         </motion.div>
 
         <Card className="mb-6 shadow-sm border-0 bg-white/80 dark:bg-slate-800/80 backdrop-blur">
           <CardContent className="p-6 text-center">
             <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">
-              What happens next?
+              {t.results.whatNext}
             </h2>
             <div className="space-y-3 text-sm text-slate-600 dark:text-slate-300">
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center shrink-0">
                   <span className="text-primary font-bold text-xs">1</span>
                 </div>
-                <p className="text-left">Your assessment responses are being reviewed</p>
+                <p className="text-left">{t.results.step1}</p>
               </div>
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center shrink-0">
                   <span className="text-primary font-bold text-xs">2</span>
                 </div>
-                <p className="text-left">Results and feedback will be shared with you shortly</p>
+                <p className="text-left">{t.results.step2}</p>
               </div>
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center shrink-0">
                   <span className="text-primary font-bold text-xs">3</span>
                 </div>
-                <p className="text-left">Any follow-up actions will be communicated directly</p>
+                <p className="text-left">{t.results.step3}</p>
               </div>
             </div>
           </CardContent>
@@ -124,27 +128,27 @@ export function ResultsScreen({
             <>
               <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin shrink-0" />
               <span className="text-slate-600 dark:text-slate-300">
-                Sending confirmation to <strong>{email}</strong>...
+                {interpolate(t.results.emailSending, { email })}
               </span>
             </>
           ) : emailSent ? (
             <>
               <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" />
               <span className="text-slate-600 dark:text-slate-300">
-                Confirmation sent to <strong>{email}</strong>
+                {interpolate(t.results.emailSent, { email })}
               </span>
             </>
           ) : (
             <>
               <Mail className="w-5 h-5 text-slate-400 shrink-0" />
-              <span className="text-slate-500">Email delivery pending...</span>
+              <span className="text-slate-500">{t.results.emailPending}</span>
             </>
           )}
         </motion.div>
 
         <Button variant="outline" className="w-full gap-2" onClick={onRestart}>
           <RefreshCw className="w-4 h-4" />
-          Start New Assessment
+          {t.results.restartAssessment}
         </Button>
       </motion.div>
     </div>

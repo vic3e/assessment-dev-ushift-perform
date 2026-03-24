@@ -5,10 +5,13 @@ import { motion } from "framer-motion";
 import { Users, UserCheck, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { LanguageSwitcher } from "@/components/ui/language-switcher";
 import type { UserRole } from "@/lib/assessment-types";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useTranslation } from "@/lib/i18n/use-translation";
+import { interpolate } from "@/lib/i18n/translations";
 
 interface RoleSelectionProps {
   onConfirm: (role: UserRole, name: string, email: string, org: string, staffMemberName?: string) => void;
@@ -21,26 +24,25 @@ export function RoleSelection({ onConfirm }: RoleSelectionProps) {
   const [org, setOrg] = useState("");
   const [staffMemberName, setStaffMemberName] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const t = useTranslation();
 
   const roles = [
     {
       id: "staff" as UserRole,
-      label: "Staff Member",
-      description:
-        "I participated in a coaching session and need to complete the Knowledge Assessment.",
+      label: t.roleSelection.roles.staff.label,
+      description: t.roleSelection.roles.staff.description,
       icon: Users,
-      weight: "Part A -- Knowledge Assessment (40%)",
+      weight: t.roleSelection.roles.staff.weight,
       color: "from-rose-400 to-rose-600",
       border: "border-rose-400",
       bg: "bg-rose-50",
     },
     {
       id: "manager" as UserRole,
-      label: "Manager / Supervisor",
-      description:
-        "I manage staff who participated and need to complete the Behavioural Assessment.",
+      label: t.roleSelection.roles.manager.label,
+      description: t.roleSelection.roles.manager.description,
       icon: UserCheck,
-      weight: "Part B -- Behavioural Assessment (50%)",
+      weight: t.roleSelection.roles.manager.weight,
       color: "from-teal-400 to-teal-600",
       border: "border-teal-400",
       bg: "bg-teal-50",
@@ -49,12 +51,12 @@ export function RoleSelection({ onConfirm }: RoleSelectionProps) {
 
   function validate() {
     const errs: Record<string, string> = {};
-    if (!name.trim()) errs.name = "Name is required";
-    if (!email.trim()) errs.email = "Email is required";
-    else if (!/\S+@\S+\.\S+/.test(email)) errs.email = "Invalid email";
-    if (!selectedRole) errs.role = "Please select a role";
+    if (!name.trim()) errs.name = t.roleSelection.errors.nameRequired;
+    if (!email.trim()) errs.email = t.roleSelection.errors.emailRequired;
+    else if (!/\S+@\S+\.\S+/.test(email)) errs.email = t.roleSelection.errors.emailInvalid;
+    if (!selectedRole) errs.role = t.roleSelection.errors.roleRequired;
     if (selectedRole === "manager" && !staffMemberName.trim()) {
-      errs.staffMemberName = "Staff member name is required for behavioral assessment";
+      errs.staffMemberName = t.roleSelection.errors.staffMemberRequired;
     }
     return errs;
   }
@@ -70,6 +72,11 @@ export function RoleSelection({ onConfirm }: RoleSelectionProps) {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 flex items-center justify-center p-4">
+      {/* Language Switcher - Fixed Position */}
+      <div className="fixed top-4 right-4 z-50">
+        <LanguageSwitcher />
+      </div>
+
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
@@ -86,19 +93,19 @@ export function RoleSelection({ onConfirm }: RoleSelectionProps) {
             <UserCheck className="w-8 h-8 text-primary-foreground" />
           </motion.div>
           <h1 className="text-3xl font-bold text-slate-900">
-            Coaching Completion Assessment
+            {t.roleSelection.title}
           </h1>
           <p className="text-slate-500 mt-2 text-sm">
-            Pass mark is <span className="font-semibold text-primary">90%</span> based on attendance, knowledge/behavioral assessment, and overall performance.
+            {interpolate(t.roleSelection.passMarkDescription, { passmark: t.roleSelection.passmark })}
           </p>
         </div>
 
         <Card className="mb-6 shadow-sm border-0 bg-white/80 backdrop-blur">
           <CardContent className="p-6 space-y-4">
-            <h2 className="font-semibold text-slate-700 mb-2">Your Details</h2>
+            <h2 className="font-semibold text-slate-700 mb-2">{t.roleSelection.yourDetails}</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="name">Full Name *</Label>
+                <Label htmlFor="name">{t.roleSelection.fullName} *</Label>
                 <Input
                   id="name"
                   placeholder="Jane Doe"
@@ -111,7 +118,7 @@ export function RoleSelection({ onConfirm }: RoleSelectionProps) {
                 )}
               </div>
               <div>
-                <Label htmlFor="email">Email Address *</Label>
+                <Label htmlFor="email">{t.roleSelection.email} *</Label>
                 <Input
                   id="email"
                   type="email"
@@ -126,7 +133,7 @@ export function RoleSelection({ onConfirm }: RoleSelectionProps) {
               </div>
             </div>
             <div>
-              <Label htmlFor="org">Organization (optional)</Label>
+              <Label htmlFor="org">{t.roleSelection.organizationName} {t.roleSelection.organizationOptional}</Label>
               <Input
                 id="org"
                 placeholder="Company name"
@@ -138,7 +145,7 @@ export function RoleSelection({ onConfirm }: RoleSelectionProps) {
         </Card>
 
         <div className="space-y-4 mb-6">
-          <p className="text-sm font-medium text-slate-600">Select your role *</p>
+          <p className="text-sm font-medium text-slate-600">{t.roleSelection.selectRole} *</p>
           {errors.role && <p className="text-xs text-red-500">{errors.role}</p>}
           {roles.map((role) => {
             const Icon = role.icon;
@@ -187,10 +194,10 @@ export function RoleSelection({ onConfirm }: RoleSelectionProps) {
         {selectedRole === "manager" && (
           <Card className="mb-6 shadow-sm border-0 bg-white/80 backdrop-blur">
             <CardContent className="p-6">
-              <Label htmlFor="staffMemberName">Staff Member Being Assessed *</Label>
+              <Label htmlFor="staffMemberName">{t.roleSelection.staffMemberName} *</Label>
               <Input
                 id="staffMemberName"
-                placeholder="Enter the name of the staff member you are assessing"
+                placeholder={t.roleSelection.staffMemberNote}
                 value={staffMemberName}
                 onChange={(e) => setStaffMemberName(e.target.value)}
                 className={errors.staffMemberName ? "border-red-400" : ""}
@@ -207,15 +214,14 @@ export function RoleSelection({ onConfirm }: RoleSelectionProps) {
             <div className="text-amber-500 text-lg mt-0.5">i</div>
             <div className="text-sm text-amber-800 space-y-1">
               <p>
-                <strong>Pass mark: 90%</strong> based on a combination of attendance, knowledge assessment, and behavioral assessment.
+                <strong>{interpolate(t.roleSelection.passMarkDescription, { passmark: t.roleSelection.passmark })}</strong>
               </p>
-              <p>You will receive a copy of your results by email upon submission.</p>
             </div>
           </CardContent>
         </Card>
 
         <Button size="lg" className="w-full gap-2 text-base h-12" onClick={handleStart}>
-          Begin Assessment
+          {t.roleSelection.startAssessment}
           <ArrowRight className="w-4 h-4" />
         </Button>
       </motion.div>

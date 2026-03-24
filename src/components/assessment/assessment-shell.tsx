@@ -6,6 +6,7 @@ import { AssessmentTimeline } from "./assessment-timeline";
 import { ModuleSlide } from "./module-slide";
 import { ResultsScreen } from "./results-screen";
 import { FeatureSteps } from "@/components/ui/feature-section";
+import { LanguageSwitcher } from "@/components/ui/language-switcher";
 import { STAFF_MODULES, MANAGER_QUESTIONS } from "@/lib/assessment-data";
 import { calculateFinalScore } from "@/lib/scoring";
 import type { Answer, UserRole, ScoreBreakdown } from "@/lib/assessment-types";
@@ -152,6 +153,11 @@ export function AssessmentShell({
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col">
+      {/* Language Switcher - Fixed Position */}
+      <div className="fixed top-4 right-4 z-50">
+        <LanguageSwitcher />
+      </div>
+
       <AssessmentTimeline
         steps={timelineSteps}
         currentStep={currentModuleIndex}
