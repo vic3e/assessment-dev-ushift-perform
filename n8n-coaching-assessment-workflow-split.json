@@ -1,6 +1,6 @@
 {
   "meta": {
-    "instanceId": "coaching-assessment-workflow"
+    "instanceId": "coaching-assessment-workflow-split"
   },
   "nodes": [
     {
@@ -12,10 +12,7 @@
       "name": "Assessment Results Webhook", 
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
-      "position": [
-        240,
-        300
-      ],
+      "position": [240, 300],
       "webhookId": "coaching-assessment-results"
     },
     {
@@ -162,10 +159,36 @@
       "name": "Transform Data",
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
-      "position": [
-        460,
-        300
-      ]
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "condition-1",
+              "leftValue": "={{ $json.role }}",
+              "rightValue": "staff",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combineOperation": "any"
+        },
+        "options": {}
+      },
+      "id": "role-router",
+      "name": "Route by Role",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [680, 300]
     },
     {
       "parameters": {
@@ -177,69 +200,81 @@
         },
         "sheetName": {
           "__rl": true,
-          "value": "={{ $json.role === 'staff' ? 'Staff Assessments' : 'Manager Assessments' }}",
+          "value": "Staff Assessments",
           "mode": "name"
         },
         "columns": {
           "mappingMode": "defineBelow",
           "value": {
-            "timestamp": "={{ $json.timestamp }}",
-            "name": "={{ $json.name }}",
-            "email": "={{ $json.email }}",
-            "organization": "={{ $json.organization }}",
-            "role": "={{ $json.role }}",
-            "staff_member": "={{ $json.staff_member }}",
-            "final_score": "={{ $json.final_score }}",
-            "pass_fail": "={{ $json.pass_fail }}",
-            "knowledge_score": "={{ $json.knowledge_score }}",
-            "behavioral_score": "={{ $json.behavioral_score }}",
-            "attendance_score": "={{ $json.attendance_score }}",
-            "module_1_score": "={{ $json.module_1_score }}",
-            "module_2_score": "={{ $json.module_2_score }}", 
-            "module_3_score": "={{ $json.module_3_score }}",
-            "module_4_score": "={{ $json.module_4_score }}",
-            "module_5_score": "={{ $json.module_5_score }}",
-            "module_6_score": "={{ $json.module_6_score }}",
-            "module_7_score": "={{ $json.module_7_score }}",
-            "overall_rating": "={{ $json.overall_rating }}",
-            "total_questions": "={{ $json.total_questions }}",
-            "correct_answers": "={{ $json.correct_answers }}",
-            "raw_answers_json": "={{ $json.raw_answers_json }}"
-          },
-          "matchingColumns": [
-            "timestamp",
-            "name", 
-            "email",
-            "organization",
-            "role",
-            "staff_member",
-            "final_score",
-            "pass_fail",
-            "knowledge_score",
-            "behavioral_score", 
-            "attendance_score",
-            "module_1_score",
-            "module_2_score",
-            "module_3_score",
-            "module_4_score",
-            "module_5_score",
-            "module_6_score",
-            "module_7_score",
-            "overall_rating",
-            "total_questions",
-            "correct_answers", 
-            "raw_answers_json"
-          ]
+            "Timestamp": "={{ $json.timestamp }}",
+            "Name": "={{ $json.name }}",
+            "Email": "={{ $json.email }}",
+            "Organization": "={{ $json.organization }}",
+            "Final Score": "={{ $json.final_score }}",
+            "Pass/Fail": "={{ $json.pass_fail }}",
+            "Knowledge Score": "={{ $json.knowledge_score }}",
+            "Attendance Score": "={{ $json.attendance_score }}",
+            "Module 1": "={{ $json.module_1_score }}",
+            "Module 2": "={{ $json.module_2_score }}",
+            "Module 3": "={{ $json.module_3_score }}",
+            "Module 4": "={{ $json.module_4_score }}",
+            "Module 5": "={{ $json.module_5_score }}",
+            "Module 6": "={{ $json.module_6_score }}",
+            "Module 7": "={{ $json.module_7_score }}",
+            "Overall Rating": "={{ $json.overall_rating }}",
+            "Questions": "={{ $json.total_questions }}",
+            "Correct": "={{ $json.correct_answers }}"
+          }
         }
       },
-      "id": "google-sheets",
-      "name": "Add to Google Sheet",
+      "id": "staff-sheet",
+      "name": "Staff Assessments Sheet",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.4,
-      "position": [
-        680,
-        300
-      ],
+      "position": [900, 200],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YOUR_GOOGLE_SHEETS_CREDENTIAL_ID",
+          "name": "Google Sheets Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1gUOPz0QCsq7edpFPbHwReoNBrtHf7CEDPyFZM99udRI",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Manager Assessments",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Timestamp": "={{ $json.timestamp }}",
+            "Name": "={{ $json.name }}",
+            "Email": "={{ $json.email }}",
+            "Organization": "={{ $json.organization }}",
+            "Staff Member": "={{ $json.staff_member }}",
+            "Final Score": "={{ $json.final_score }}",
+            "Pass/Fail": "={{ $json.pass_fail }}",
+            "Behavioral Score": "={{ $json.behavioral_score }}",
+            "Attendance Score": "={{ $json.attendance_score }}",
+            "Overall Rating": "={{ $json.overall_rating }}",
+            "Questions": "={{ $json.total_questions }}",
+            "Raw Responses": "={{ $json.raw_answers_json }}"
+          }
+        }
+      },
+      "id": "manager-sheet",
+      "name": "Manager Assessments Sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.4,
+      "position": [900, 400],
       "credentials": {
         "googleSheetsOAuth2Api": {
           "id": "YOUR_GOOGLE_SHEETS_CREDENTIAL_ID",
@@ -264,7 +299,25 @@
       "main": [
         [
           {
-            "node": "Add to Google Sheet", 
+            "node": "Route by Role",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route by Role": {
+      "main": [
+        [
+          {
+            "node": "Staff Assessments Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Manager Assessments Sheet",
             "type": "main",
             "index": 0
           }
