@@ -87,7 +87,7 @@ function buildParticipantEmail(submission: AssessmentSubmission): string {
 
     <div style="padding:32px;">
       <p style="color:#374151;font-size:15px;margin:0 0 24px;">
-        ${content.greeting(participantName, organizationName, role, staffMemberName)}
+        ${content.greeting(participantName, organizationName, role ?? undefined, staffMemberName)}
       </p>
 
       <div style="background:#ecfdf5;border:1px solid #6ee7b7;border-radius:10px;padding:16px;margin-bottom:24px;">
@@ -213,10 +213,6 @@ export async function POST(req: NextRequest) {
       console.error("Missing required env vars: MAILGUN_DOMAIN, FROM_EMAIL, ADMIN_EMAIL");
       return NextResponse.json({ success: false, error: "Server misconfiguration" }, { status: 500 });
     }
-
-    const resultLabel = submission.scores.passed
-      ? "PASSED"
-      : "Extended Coaching Required";
 
     await mg.messages.create(domain, {
       from: `${appName} <${fromEmail}>`,
