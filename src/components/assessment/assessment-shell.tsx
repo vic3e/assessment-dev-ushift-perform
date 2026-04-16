@@ -119,6 +119,7 @@ export function AssessmentShell({
           answers,
           scores: finalScores,
           submittedAt: new Date().toISOString(),
+          language,
         }),
       });
       setEmailSent(true);

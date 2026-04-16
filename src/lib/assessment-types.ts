@@ -49,4 +49,5 @@ export interface AssessmentSubmission {
   answers: Answer[];
   scores: ScoreBreakdown;
   submittedAt: string;
+  language: "en" | "es";
 }

@@ -9,9 +9,62 @@ const mg = mailgun.client({
   key: process.env.MAILGUN_API_KEY!,
 });
 
+// Email content by language
+const emailContent = {
+  en: {
+    participant: {
+      subject: "Thank you for completing the Coaching Completion Assessment",
+      title: "Thank You for Completing the Assessment",
+      greeting: (name: string, organizationName?: string, role?: string, staffMemberName?: string) => 
+        `Dear <strong>${name}</strong>,<br><br>
+        Thank you for completing the Coaching Completion Assessment${organizationName ? ` for <strong>${organizationName}</strong>` : ""}${role === "manager" && staffMemberName ? ` for staff member <strong>${staffMemberName}</strong>` : ""}. 
+        Your responses have been successfully submitted.`,
+      completeBadge: {
+        title: "Assessment Complete!",
+        subtitle: "Your results will be reviewed and shared with you shortly."
+      },
+      nextSteps: {
+        title: "What Happens Next?",
+        steps: [
+          "Your assessment responses are being reviewed",
+          "Results and feedback will be shared with you soon", 
+          "Any follow-up actions will be communicated directly"
+        ]
+      },
+      footer: "This is an automated confirmation from the Coaching Completion Assessment Platform.<br>Please do not reply to this email."
+    }
+  },
+  es: {
+    participant: {
+      subject: "Gracias por completar la Evaluación de Finalización de Coaching",
+      title: "Gracias por Completar la Evaluación",
+      greeting: (name: string, organizationName?: string, role?: string, staffMemberName?: string) =>
+        `Estimado/a <strong>${name}</strong>,<br><br>
+        Gracias por completar la Evaluación de Finalización de Coaching${organizationName ? ` para <strong>${organizationName}</strong>` : ""}${role === "manager" && staffMemberName ? ` para el miembro del personal <strong>${staffMemberName}</strong>` : ""}. 
+        Sus respuestas han sido enviadas exitosamente.`,
+      completeBadge: {
+        title: "¡Evaluación Completa!",
+        subtitle: "Sus resultados serán revisados y compartidos con usted en breve."
+      },
+      nextSteps: {
+        title: "¿Qué Sigue?",
+        steps: [
+          "Sus respuestas de evaluación están siendo revisadas",
+          "Los resultados y comentarios serán compartidos con usted pronto",
+          "Cualquier acción de seguimiento se comunicará directamente"
+        ]
+      },
+      footer: "Esta es una confirmación automática de la Plataforma de Evaluación de Finalización de Coaching.<br>Por favor no responda a este correo electrónico."
+    }
+  }
+};
+
 function buildParticipantEmail(submission: AssessmentSubmission): string {
-  const { participantName, role, organizationName, submittedAt, staffMemberName } =
+  const { participantName, role, organizationName, submittedAt, staffMemberName, language } =
     submission;
+  
+  const content = emailContent[language].participant;
+  const locale = language === 'es' ? 'es-ES' : 'en-GB';
 
   return `
 <!DOCTYPE html>
@@ -21,9 +74,9 @@ function buildParticipantEmail(submission: AssessmentSubmission): string {
   <div style="max-width:600px;margin:40px auto;background:white;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08);">
 
     <div style="background:linear-gradient(135deg,#1e40af,#0369a1);padding:40px 32px;text-align:center;">
-      <h1 style="color:white;margin:0;font-size:24px;font-weight:700;">Thank You for Completing the Assessment</h1>
+      <h1 style="color:white;margin:0;font-size:24px;font-weight:700;">${content.title}</h1>
       <p style="color:rgba(255,255,255,0.8);margin:8px 0 0;font-size:14px;">
-        ${new Date(submittedAt).toLocaleDateString("en-GB", {
+        ${new Date(submittedAt).toLocaleDateString(locale, {
           weekday: "long",
           year: "numeric",
           month: "long",
@@ -34,30 +87,25 @@ function buildParticipantEmail(submission: AssessmentSubmission): string {
 
     <div style="padding:32px;">
       <p style="color:#374151;font-size:15px;margin:0 0 24px;">
-        Dear <strong>${participantName}</strong>,<br><br>
-        Thank you for completing the Coaching Completion Assessment${organizationName ? ` for <strong>${organizationName}</strong>` : ""}${role === "manager" && staffMemberName ? ` for staff member <strong>${staffMemberName}</strong>` : ""}. 
-        Your responses have been successfully submitted.
+        ${content.greeting(participantName, organizationName, role, staffMemberName)}
       </p>
 
       <div style="background:#ecfdf5;border:1px solid #6ee7b7;border-radius:10px;padding:16px;margin-bottom:24px;">
         <p style="margin:0;font-size:14px;color:#065f46;text-align:center;">
-          <strong>Assessment Complete!</strong><br>
-          Your results will be reviewed and shared with you shortly.
+          <strong>${content.completeBadge.title}</strong><br>
+          ${content.completeBadge.subtitle}
         </p>
       </div>
 
       <div style="background:#f8fafc;border-radius:12px;padding:20px;margin-bottom:24px;">
-        <h2 style="margin:0 0 16px;font-size:16px;color:#1e293b;text-align:center;">What Happens Next?</h2>
+        <h2 style="margin:0 0 16px;font-size:16px;color:#1e293b;text-align:center;">${content.nextSteps.title}</h2>
         <ul style="margin:0;padding-left:20px;color:#475569;font-size:14px;line-height:1.6;">
-          <li>Your assessment responses are being reviewed</li>
-          <li>Results and feedback will be shared with you soon</li>
-          <li>Any follow-up actions will be communicated directly</li>
+          ${content.nextSteps.steps.map(step => `<li>${step}</li>`).join('')}
         </ul>
       </div>
 
       <p style="color:#94a3b8;font-size:12px;text-align:center;margin:0;">
-        This is an automated confirmation from the Coaching Completion Assessment Platform.<br>
-        Please do not reply to this email.
+        ${content.footer}
       </p>
     </div>
   </div>
@@ -173,7 +221,7 @@ export async function POST(req: NextRequest) {
     await mg.messages.create(domain, {
       from: `${appName} <${fromEmail}>`,
       to: [submission.participantEmail],
-      subject: `Thank you for completing the Coaching Completion Assessment`,
+      subject: emailContent[submission.language || 'en'].participant.subject,
       html: buildParticipantEmail(submission),
     });
 
