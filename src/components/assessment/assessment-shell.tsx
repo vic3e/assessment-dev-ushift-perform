@@ -7,10 +7,11 @@ import { ModuleSlide } from "./module-slide";
 import { ResultsScreen } from "./results-screen";
 import { FeatureSteps } from "@/components/ui/feature-section";
 import { LanguageSwitcher } from "@/components/ui/language-switcher";
-import { STAFF_MODULES, MANAGER_QUESTIONS } from "@/lib/assessment-data";
+import { getTranslatedStaffModules, getTranslatedManagerQuestions } from "@/lib/translated-assessment-data";
 import { calculateFinalScore } from "@/lib/scoring";
 import type { Answer, UserRole, ScoreBreakdown } from "@/lib/assessment-types";
 import { Card, CardContent } from "@/components/ui/card";
+import { useLanguage } from "@/lib/i18n/language-context";
 
 interface AssessmentShellProps {
   role: UserRole;
@@ -27,6 +28,7 @@ export function AssessmentShell({
   organizationName,
   staffMemberName,
 }: AssessmentShellProps) {
+  const { language } = useLanguage();
   const [currentModuleIndex, setCurrentModuleIndex] = useState(0);
   const [answers, setAnswers] = useState<Answer[]>([]);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -37,13 +39,13 @@ export function AssessmentShell({
 
   const modules =
     role === "staff"
-      ? STAFF_MODULES
+      ? getTranslatedStaffModules(language)
       : [
           {
             id: 1,
             title: "Behavioural Assessment",
             shortTitle: "Behavioural",
-            questions: MANAGER_QUESTIONS,
+            questions: getTranslatedManagerQuestions(language),
           },
         ];
 
@@ -97,7 +99,9 @@ export function AssessmentShell({
   }, [currentModuleIndex]);
 
   async function handleSubmit() {
-    const finalScores = calculateFinalScore(role, answers);
+    const staffModules = role === "staff" ? getTranslatedStaffModules(language) : undefined;
+    const managerQuestions = role === "manager" ? getTranslatedManagerQuestions(language) : undefined;
+    const finalScores = calculateFinalScore(role, answers, staffModules, managerQuestions);
     setScores(finalScores);
     setIsSubmitted(true);
     setIsSending(true);

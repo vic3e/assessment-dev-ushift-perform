@@ -1,5 +1,5 @@
-import type { Answer, ScoreBreakdown, UserRole } from "./assessment-types";
-import { MANAGER_QUESTIONS, PASS_MARK, STAFF_MODULES, WEIGHTS } from "./assessment-data";
+import type { Answer, ScoreBreakdown, UserRole, Module, Question } from "./assessment-types";
+import { PASS_MARK, WEIGHTS } from "./translated-assessment-data";
 
 const OPTION_SCORES: Record<string, number> = {
   A: 1,
@@ -8,7 +8,10 @@ const OPTION_SCORES: Record<string, number> = {
   D: 4,
 };
 
-export function calculateKnowledgeScore(answers: Answer[]): {
+export function calculateKnowledgeScore(
+  answers: Answer[], 
+  staffModules: Module[]
+): {
   score: number;
   moduleBreakdown: ScoreBreakdown["moduleBreakdown"];
 } {
@@ -17,7 +20,7 @@ export function calculateKnowledgeScore(answers: Answer[]): {
   let totalCorrect = 0;
   let totalQuestions = 0;
 
-  for (const module of STAFF_MODULES) {
+  for (const module of staffModules) {
     let correct = 0;
     for (const question of module.questions) {
       const answer = answers.find((a) => a.questionId === question.id);
@@ -41,8 +44,8 @@ export function calculateKnowledgeScore(answers: Answer[]): {
   return { score, moduleBreakdown };
 }
 
-export function calculateBehavioralScore(answers: Answer[]): number {
-  const behavioralQuestions = MANAGER_QUESTIONS.slice(0, 10);
+export function calculateBehavioralScore(answers: Answer[], managerQuestions: Question[]): number {
+  const behavioralQuestions = managerQuestions.slice(0, 10);
   const maxScore = behavioralQuestions.length * 4;
 
   let totalScore = 0;
@@ -59,11 +62,16 @@ export function calculateBehavioralScore(answers: Answer[]): number {
 export function calculateFinalScore(
   role: UserRole,
   answers: Answer[],
+  staffModules?: Module[],
+  managerQuestions?: Question[],
   attendanceScore = 100
 ): ScoreBreakdown {
   if (role === "staff") {
+    if (!staffModules) {
+      throw new Error("Staff modules are required for staff role scoring");
+    }
     const { score: knowledgeScore, moduleBreakdown } =
-      calculateKnowledgeScore(answers);
+      calculateKnowledgeScore(answers, staffModules);
 
     const weightedTotal = Math.round(
       knowledgeScore * WEIGHTS.knowledge +
@@ -81,7 +89,10 @@ export function calculateFinalScore(
     };
   }
 
-  const behavioralScore = calculateBehavioralScore(answers);
+  if (!managerQuestions) {
+    throw new Error("Manager questions are required for manager role scoring");
+  }
+  const behavioralScore = calculateBehavioralScore(answers, managerQuestions);
 
   const weightedTotal = Math.round(
     0 * WEIGHTS.knowledge +

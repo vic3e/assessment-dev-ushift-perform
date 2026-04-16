@@ -28,127 +28,127 @@
             {
               "id": "assign-2", 
               "name": "name",
-              "value": "={{ $json.participantName }}",
+              "value": "={{ $json.body.participantName }}",
               "type": "string"
             },
             {
               "id": "assign-3",
               "name": "email",
-              "value": "={{ $json.participantEmail }}",
+              "value": "={{ $json.body.participantEmail }}",
               "type": "string"
             },
             {
               "id": "assign-4",
               "name": "organization",
-              "value": "={{ $json.organizationName || 'N/A' }}",
+              "value": "={{ $json.body.organizationName || 'N/A' }}",
               "type": "string"
             },
             {
               "id": "assign-5",
               "name": "role",
-              "value": "={{ $json.role }}",
+              "value": "={{ $json.body.role }}",
               "type": "string"
             },
             {
               "id": "assign-6",
               "name": "staff_member", 
-              "value": "={{ $json.staffMemberName || 'N/A' }}",
+              "value": "={{ $json.body.staffMemberName || 'N/A' }}",
               "type": "string"
             },
             {
               "id": "assign-7",
               "name": "final_score",
-              "value": "={{ $json.scores.weightedTotal }}",
+              "value": "={{ $json.body.scores.weightedTotal }}",
               "type": "number"
             },
             {
               "id": "assign-8",
               "name": "pass_fail",
-              "value": "={{ $json.scores.passed ? 'PASS' : 'FAIL' }}",
+              "value": "={{ $json.body.scores.passed ? 'PASS' : 'FAIL' }}",
               "type": "string"
             },
             {
               "id": "assign-9",
               "name": "knowledge_score",
-              "value": "={{ $json.scores.knowledgeScore }}",
+              "value": "={{ $json.body.scores.knowledgeScore }}",
               "type": "number"
             },
             {
               "id": "assign-10",
               "name": "behavioral_score",
-              "value": "={{ $json.scores.behavioralScore }}",
+              "value": "={{ $json.body.scores.behavioralScore }}",
               "type": "number"
             },
             {
               "id": "assign-11", 
               "name": "attendance_score",
-              "value": "={{ $json.scores.attendanceScore }}",
+              "value": "={{ $json.body.scores.attendanceScore }}",
               "type": "number"
             },
             {
               "id": "assign-12",
               "name": "module_1_score",
-              "value": "={{ $json.scores.moduleBreakdown[0]?.percentage || 'N/A' }}",
+              "value": "={{ $json.body.scores.moduleBreakdown[0]?.percentage || 'N/A' }}",
               "type": "string"
             },
             {
               "id": "assign-13",
               "name": "module_2_score", 
-              "value": "={{ $json.scores.moduleBreakdown[1]?.percentage || 'N/A' }}",
+              "value": "={{ $json.body.scores.moduleBreakdown[1]?.percentage || 'N/A' }}",
               "type": "string"
             },
             {
               "id": "assign-14",
               "name": "module_3_score",
-              "value": "={{ $json.scores.moduleBreakdown[2]?.percentage || 'N/A' }}",
+              "value": "={{ $json.body.scores.moduleBreakdown[2]?.percentage || 'N/A' }}",
               "type": "string"
             },
             {
               "id": "assign-15",
               "name": "module_4_score",
-              "value": "={{ $json.scores.moduleBreakdown[3]?.percentage || 'N/A' }}",
+              "value": "={{ $json.body.scores.moduleBreakdown[3]?.percentage || 'N/A' }}",
               "type": "string"
             },
             {
               "id": "assign-16",
               "name": "module_5_score",
-              "value": "={{ $json.scores.moduleBreakdown[4]?.percentage || 'N/A' }}",
+              "value": "={{ $json.body.scores.moduleBreakdown[4]?.percentage || 'N/A' }}",
               "type": "string"
             },
             {
               "id": "assign-17",
               "name": "module_6_score",
-              "value": "={{ $json.scores.moduleBreakdown[5]?.percentage || 'N/A' }}",
+              "value": "={{ $json.body.scores.moduleBreakdown[5]?.percentage || 'N/A' }}",
               "type": "string"
             },
             {
               "id": "assign-18",
               "name": "module_7_score",
-              "value": "={{ $json.scores.moduleBreakdown[6]?.percentage || 'N/A' }}",
+              "value": "={{ $json.body.scores.moduleBreakdown[6]?.percentage || 'N/A' }}",
               "type": "string"
             },
             {
               "id": "assign-19",
               "name": "overall_rating",
-              "value": "={{ $json.scores.weightedTotal >= 90 ? 'Advanced' : $json.scores.weightedTotal >= 75 ? 'Proficient' : $json.scores.weightedTotal >= 60 ? 'Developing' : 'Emerging' }}",
+              "value": "={{ $json.body.scores.weightedTotal >= 90 ? 'Advanced' : $json.body.scores.weightedTotal >= 75 ? 'Proficient' : $json.body.scores.weightedTotal >= 60 ? 'Developing' : 'Emerging' }}",
               "type": "string"
             },
             {
               "id": "assign-20",
               "name": "total_questions", 
-              "value": "={{ $json.answers.length }}",
+              "value": "={{ $json.body.answers.length }}",
               "type": "number"
             },
             {
               "id": "assign-21",
               "name": "correct_answers",
-              "value": "={{ $json.role === 'staff' ? Math.round($json.scores.knowledgeScore * $json.answers.length / 100) : Math.round($json.scores.behavioralScore * $json.answers.length / 100) }}",
+              "value": "={{ $json.body.role === 'staff' ? Math.round($json.body.scores.knowledgeScore * $json.body.answers.length / 100) : Math.round($json.body.scores.behavioralScore * $json.body.answers.length / 100) }}",
               "type": "number"
             },
             {
               "id": "assign-22",
               "name": "raw_answers_json",
-              "value": "={{ JSON.stringify($json.answers) }}",
+              "value": "={{ JSON.stringify($json.body.answers) }}",
               "type": "string"
             }
           ]
